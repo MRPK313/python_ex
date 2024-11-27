@@ -1,1 +1,1 @@
-# Have a fun with python excercise
+# Have a fun with python exercise
