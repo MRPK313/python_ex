@@ -5,8 +5,6 @@ class Student:
 
     """
 
-    
-
     def __init__(self, name: str, age: int) -> None:
         """initialize the Student object with the given name and age
 
