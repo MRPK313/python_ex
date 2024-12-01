@@ -1,3 +1,6 @@
+from pprint import pprint
+
+
 class BaseClass:
     num_call_base = 0
 
@@ -44,4 +47,6 @@ diamond_problem.call_class()
 
 print()
 
-print(f"Sub class run count: {diamond_problem.num_call_sub} Left class run count: {diamond_problem.num_call_left} Right class run count: {diamond_problem.num_call_right} Base class run count: {diamond_problem.num_call_base} <<----")
+print(f"Sub class run count: {diamond_problem.num_call_sub} Left class run count: {diamond_problem.num_call_left} Right class run count: {diamond_problem.num_call_right} Base class run count: {diamond_problem.num_call_base} <<----\n")
+
+pprint(SubClass.__mro__)
