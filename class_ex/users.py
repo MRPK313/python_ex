@@ -38,6 +38,17 @@ class Seller(User):
 
     def order(self, order: "Order") -> None:
         print(f"{self.user_name} from your product {order!r} was sold")
+            
+
+class Buyer(User):
+
+    def __init__(self, user_name: str, email: str, password: str, phone: str) -> None:
+        super().__init__(user_name, email, password)
+        self.phone = phone
+
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}(user_name={self.user_name!r}, email={self.email!r}, password={self.password!r}, phone={self.phone!r})"
 
 
 
@@ -46,25 +57,12 @@ class Seller(User):
 
 john = User("John", "john@example.com", "John1234")
 
-# print(john)
-
-# print(repr(john))
-
 seler_test = Seller("kate", "kate@example.com", "kate1234")
 
 seler_test2 = Seller("joli", "joli@example.com", "joli1234")
 
-# print(seler_test)
-
-# seler_test.order("coffee")
+buyer1 = Buyer("larry", "larry@example.com", "larry1234", "0934")
 
 
-# print(User.all_users)
+pprint(repr(buyer1.all_users))
 
-
-# (User.all_users.search("o"))
-# pprint(UserList.search(User.all_users,"o"))
-
-pprint(User.all_users.search("o"))
-
-# pprint(dir(User))
