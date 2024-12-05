@@ -1,3 +1,23 @@
+import logging
+from venv import logger
+
+
+logging.basicConfig(level=logging.INFO)
+
+
+class InfoMixin:
+    """
+    Mixin class for storing information about the program.
+    """
+    def print_info(self):
+        return f"{self.__class__.__name__} ----> {self}"
+
+
+class LoggerMixin:
+    def log_info(self):
+        return logger.info(f"{self.__class__.__name__} ----> {self}")
+
+
 class Vehicle:
     """
     A base class representing a vehicle.
@@ -37,7 +57,7 @@ class Vehicle:
         return f"Vehicle(color={self.color!r}, weight={self.weight!r}kg)"
 
 
-class Car(Vehicle):
+class Car(Vehicle, InfoMixin):
     """
     A class representing a car, inheriting from Vehicle.
 
@@ -113,7 +133,7 @@ class Bicycle(Vehicle):
         return f"Bicycle(color={self.color!r}, weight={self.weight!r}kg, length={self.length})"
 
 
-class Benz(Car):
+class Benz(Car, LoggerMixin):
     """
     A class representing a Benz car, inheriting from Car.
 
@@ -137,7 +157,9 @@ if __name__ == "__main__":
     car = Car(color="Red", weight=1500, cylinders=8)
     print(car)
     print(car.move())
+    print(car.print_info())
 
     benz = Benz(color="Black", weight=1600, cylinders=6, is_hybrid=True)
     print(benz)
     print(benz.move())
+    benz.log_info()
