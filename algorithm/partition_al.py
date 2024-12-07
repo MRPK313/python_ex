@@ -7,13 +7,13 @@ def partition(arr):
     pivot = arr[0]
     i,j = 1 , len(arr) - 1
 
-    while i < j :
+    while i <= j :
 
-        while i < j and arr[i] <= pivot:
+        while i <= j and arr[i] <= pivot:
             i += 1
 
         
-        while i < j and arr[j] > pivot :
+        while i <= j and arr[j] > pivot :
             j -= 1
 
         
@@ -42,4 +42,7 @@ print(partition([3,3,1,2,4]))
 
 
 print(partition([3,3,3]))
+
+
+# if just partition order is o(n)
 
