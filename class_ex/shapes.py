@@ -70,8 +70,8 @@ class Square(Shape):
     def calculate_perimeter(self) -> None:
         self.perimeter = 4 * self.length
 
-    def __call__(self, length) -> Any:
-        self.length = length
+    def __call__(self, **kwargs) -> None:
+        super().__init__(**kwargs)
 
     
 
@@ -173,7 +173,7 @@ print(s.show())
 print(40 * "_")
 
 
-s(8)
+s(length = 8)
 s.calculate_area()
 s.calculate_perimeter()
 print(s.show())
