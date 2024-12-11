@@ -1,5 +1,8 @@
 
 
+from typing import Any
+
+
 class Shape:
 
     def __init__(self, **kwargs) -> None:
@@ -66,6 +69,9 @@ class Square(Shape):
 
     def calculate_perimeter(self) -> None:
         self.perimeter = 4 * self.length
+
+    def __call__(self, length) -> Any:
+        self.length = length
 
     
 
@@ -161,6 +167,13 @@ print(40 * "_")
 
 
 s = Square(length = 4)
+s.calculate_area()
+s.calculate_perimeter()
+print(s.show())
+print(40 * "_")
+
+
+s(8)
 s.calculate_area()
 s.calculate_perimeter()
 print(s.show())
