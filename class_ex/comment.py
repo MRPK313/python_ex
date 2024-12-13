@@ -12,8 +12,20 @@ class Product :
         self.price = price
         self.off = off
 
-    def __str__(self) -> str:
+    def __str__(self, ) -> str:
         return self.product_name
+    
+    def __mod__(self, percentage_offer) -> str:
+        """over load __mod__ '%' for calculate final pricee after get Percentage of offer
+
+        Returns:
+           str: Percentage of offer
+        """
+
+
+        return f"{'*'*40}\nfinal pricee : {(1 - percentage_offer / 100) * self.price: .0f}"
+
+
 
 
 class Comment:
@@ -68,7 +80,7 @@ class Comment:
 
 
 print("_"*40)
-laptop = Product("loq", 59, 0)
+laptop = Product("loq", 100, 0)
 
 c1 = Comment(laptop, "john", "g00d censor test", 50, 50)
 
@@ -79,7 +91,7 @@ c1.info()
 
 
 print("_"*40)
-laptop = Product("loq", 59, 0)
+laptop = Product("loq", 100, 0)
 
 c1 = Comment.censorship(laptop, "john", "g00d censor test", 50, 50)
 
@@ -90,3 +102,5 @@ c1.info()
 print("_"*40)
 c1.alapsed_time(c1.date - timedelta(days= 4, minutes= 30))
 
+print(laptop.price)
+print(laptop % 20)
