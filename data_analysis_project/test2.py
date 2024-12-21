@@ -32,21 +32,36 @@ def load_and_prepare_data():
     current_dir = os.path.dirname(os.path.abspath(__file__))  # Directory of the script
     file_path = os.path.join(current_dir, "retail.dat")
 
-    
+    try:
+        with open(file_path, "r") as f:
+            dataset = [line.strip().split() for line in f.readlines()]
 
-    # Download the retail dataset
-    url = "http://fimi.uantwerpen.be/data/retail.dat"
-    # file_path = "retail.dat"
-    urllib.request.urlretrieve(url, file_path)
+        # Convert transactions to one-hot encoded format
+        te = TransactionEncoder()
+        te_data = te.fit(dataset).transform(dataset)
+        data = pd.DataFrame(te_data, columns=te.columns_)
+        print("1")
+        # exit()
 
-    # Read the dataset and prepare transactions
-    with open(file_path, "r") as f:
-        dataset = [line.strip().split() for line in f.readlines()]
+    except:
 
-    # Convert transactions to one-hot encoded format
-    te = TransactionEncoder()
-    te_data = te.fit(dataset).transform(dataset)
-    data = pd.DataFrame(te_data, columns=te.columns_)
+
+        # Download the retail dataset
+        url = "http://fimi.uantwerpen.be/data/retail.dat"
+        # file_path = "retail.dat"
+        urllib.request.urlretrieve(url, file_path)
+
+        # Read the dataset and prepare transactions
+        with open(file_path, "r") as f:
+            dataset = [line.strip().split() for line in f.readlines()]
+
+        # Convert transactions to one-hot encoded format
+        te = TransactionEncoder()
+        te_data = te.fit(dataset).transform(dataset)
+        data = pd.DataFrame(te_data, columns=te.columns_)
+        print(2)
+        # exit()
+
     return data
 
 # Apriori Algorithm Implementation
