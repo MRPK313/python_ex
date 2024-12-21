@@ -40,8 +40,8 @@ def load_and_prepare_data():
         te = TransactionEncoder()
         te_data = te.fit(dataset).transform(dataset)
         data = pd.DataFrame(te_data, columns=te.columns_)
-        print("1")
-        # exit()
+
+
 
     except:
 
@@ -59,8 +59,8 @@ def load_and_prepare_data():
         te = TransactionEncoder()
         te_data = te.fit(dataset).transform(dataset)
         data = pd.DataFrame(te_data, columns=te.columns_)
-        print(2)
-        # exit()
+
+
 
     return data
 
