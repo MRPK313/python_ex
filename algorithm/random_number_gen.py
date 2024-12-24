@@ -11,16 +11,18 @@ def random_generator(counter = 500000, start = 1000, end = 9999):
 
 
 
-def random_to_file(counter = 500000, start = 1000, end = 9999, file_name = "random.txt"):
+def random_to_file(counter = 500000, start = 1000, end = 9999, file_name = "_number_random.txt"):
     
     random_nums = random_generator(counter, start, end)
 
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    file_path = os.path.join(current_dir, file_name)
+    file_path = os.path.join(current_dir, str(counter)+file_name)
 
     with open(file_path, "w") as file:
         for num in random_nums:
             file.write(str(num) + "\n")
+    
+    return file_path
 
 
 
