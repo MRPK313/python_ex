@@ -87,9 +87,10 @@ def performance(func):
         end_time = time.perf_counter()  
         end_memory = process.memory_info().rss 
 
+        memmory = end_time - start_time
         performance_data = {
             "function": func.__name__.replace("_decorated", ""),
-            "time_taken": end_time - start_time,  
+            "time_taken":  memmory if memmory >= 0 else 0.0000001,  
             "memory_usage": (end_memory - start_memory) / 10**6 ,
             "number_count": int(count_numbers)
         }
