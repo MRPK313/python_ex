@@ -1,5 +1,6 @@
 import time
 import os
+from numpy import number
 import psutil
 from save_performance_data_to_word import save_performance_data_to_word
 from rich.prompt import Prompt
@@ -89,7 +90,7 @@ def performance(func):
 
         memmory = end_time - start_time
         performance_data = {
-            "function": func.__name__.replace("_decorated", ""),
+            "function": func.__name__.replace("_decorated", "").replace("main_q_sort","partition_quck_sort"),
             "time_taken":  memmory if memmory >= 0 else 0.0000001,  
             "memory_usage": (end_memory - start_memory) / 10**6 ,
             "number_count": int(count_numbers)
@@ -114,6 +115,7 @@ def write_file(file_name, sorted_nums):
 
     except :
         console.print("\nError while reading file.\n", style="bold red")
+
 
 
 
@@ -146,9 +148,6 @@ def python_sort_decorated(numbers):
 
 
 
-
-
-
     
 # main func usage
 if __name__ == "__main__":
@@ -156,6 +155,69 @@ if __name__ == "__main__":
     numbers = file_reader()
 
     sort_iput = Prompt.ask("Enter your your algorithem or 'all' for teat all algorithem sort", choices=["all", "merge", "quick", "partition_quick", "python", "buble"], default="all")
+
+    def main_merge():
+
+        result, performance_data = merge_sort_decorated(numbers)
+        list_data.append(performance_data)
+        print(list_data)
+        write_file(file_name="merge_sorted.txt", sorted_nums=result)
+        file_path = save_performance_data_to_word(list_data, flag="merge")
+        console.print(f"\nyour Reporting functions in {file_path}\n", style="bold blue")
+
+
+    def main_quick():
+
+        result, performance_data = q_sort_decorated(numbers)
+        list_data.append(performance_data)
+        print(list_data)
+        write_file(file_name="quick_sorted.txt", sorted_nums=result)
+        file_path = save_performance_data_to_word(list_data, flag="quick")
+        console.print(f"\nyour Reporting functions in {file_path}\n", style="bold blue")
+
+
+    def main_partition_quick():
+
+        result, performance_data = main_q_sort_decorated(numbers)
+        list_data.append(performance_data)
+        print(list_data)
+        write_file(file_name="partition_quick_sorted.txt", sorted_nums=result)
+        file_path = save_performance_data_to_word(list_data, flag="partition_quick")
+        console.print(f"\nyour Reporting functions in {file_path}\n", style="bold blue")
+
+
+    def main_python():
+
+        result, performance_data = python_sort_decorated(numbers)
+        list_data.append(performance_data)
+        print(list_data)
+        write_file(file_name="python_sorted.txt", sorted_nums=result)
+        file_path = save_performance_data_to_word(list_data, flag="python")
+        console.print(f"\nyour Reporting functions in {file_path}\n", style="bold blue")
+
+    def main_buble(numbers = numbers):
+
+        if  len(numbers) <= 10000:
+
+            result, performance_data = buble_sort_decorated(numbers)
+            list_data.append(performance_data)
+            print(list_data)
+            write_file(file_name="buble_sorted.txt", sorted_nums=result)
+            file_path = save_performance_data_to_word(list_data, flag="buble")
+            console.print(f"\nyour Reporting functions in {file_path}\n", style="bold blue")
+
+        else:
+            performance_data = {
+                "function": "bubble_sort",
+                "time_taken": "Timeout",
+                "memory_usage": "N/A",
+                "number_count": len(numbers)  
+            }
+            list_data.append(performance_data)
+            print(list_data)
+            file_path = save_performance_data_to_word(list_data, flag="buble")
+            console.print(f"\nyour Reporting functions in {file_path}\n", style="bold blue")
+
 
 
     if sort_iput == "all":
@@ -169,33 +231,24 @@ if __name__ == "__main__":
 
 
     elif sort_iput == "merge":
-        result, performance_data = merge_sort_decorated(numbers)
-        list_data.append(performance_data)
-        print(list_data)
-        write_file(file_name="merge_sorted.txt", sorted_nums=result)
-        file_path = save_performance_data_to_word(list_data, flag="merge")
-        console.print(f"\nyour Reporting functions in {file_path}\n", style="bold blue")
+        
+        main_merge()
 
     elif sort_iput == "quick":
-        result, performance_data = q_sort_decorated(numbers)
-        list_data.append(performance_data)
-        print(list_data)
-        write_file(file_name="quick_sorted.txt", sorted_nums=result)
-        file_path = save_performance_data_to_word(list_data, flag="quick")
-        console.print(f"\nyour Reporting functions in {file_path}\n", style="bold blue")
-        
+
+        main_quick()
 
     elif sort_iput == "partition_quick":
-        result, performance_data = main_q_sort_decorated(numbers)
 
-        print(performance_data)
+        main_partition_quick()
 
     elif sort_iput == "python":
-        result, performance_data = python_sort_decorated(numbers)
-        print(result)
-        print(performance_data)
+
+        main_python()
+        
 
     elif sort_iput == "buble":
-        result, performance_data = buble_sort_decorated(numbers)
-        print(result)
-        print(performance_data)
+
+        main_buble()
+
+   

@@ -24,8 +24,19 @@ def save_performance_data_to_word(performance_data_list, flag= "", file_name='pe
         if flag == "":
             file_name = row_cells[0].text = data['function']
         row_cells[0].text = data['function']
-        row_cells[1].text = f"{data['time_taken']:.6f}"
-        row_cells[2].text = f"{data['memory_usage']:.6f}"
+
+        time_taken = data['time_taken']
+
+        if isinstance(time_taken,int) or isinstance(time_taken,float):
+            row_cells[1].text = f"{data['time_taken']:.8f}"
+        else:
+            row_cells[1].text = f"{data['time_taken']}"
+
+        memory_usage = data['memory_usage']
+        if isinstance(memory_usage, int) or isinstance(memory_usage, float):
+            row_cells[2].text = f"{data['memory_usage']:.8f}"
+        else:
+            row_cells[2].text = f"{data['memory_usage']}"
         row_cells[3].text = f"{data['number_count']}"
         
     if flag != "":
