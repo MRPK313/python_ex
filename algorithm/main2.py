@@ -75,13 +75,13 @@ def performance(func):
 def write_file(file_name, sorted_nums):
     current_dir = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(current_dir, file_name)
-    console.print(f"\nyour random file numer generated in --> {file_path!r}\n", style="bold green")
+    # console.print(f"\nyour random file numer generated in --> {file_path!r}\n", style="bold green")
 
     try :
         with open(file_path, "w") as file:
             for num in sorted_nums:
                 file.write(str(num) + "\n")
-            console.print(f"\nyour sorted numbers in {file_path}\n", style="bold green")
+            console.print(f"\nyour sorted numbers in {file_path}\n", style="bold yellow")
 
     except :
         console.print("\nError while reading file.\n", style="bold red")
