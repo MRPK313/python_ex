@@ -1,6 +1,7 @@
 import time
 import os
 import psutil
+from save_performance_data_to_word import save_performance_data_to_word
 from rich.prompt import Prompt
 from rich.console import Console
 from random_number_gen import random_to_file
@@ -28,25 +29,6 @@ console = Console()
 #         return result, performance_data
 #     return wrapper
 
-# time, memory decorator
-def performance(func):
-    def wrapper(*args, **kwargs):
-        process = psutil.Process(os.getpid())
-        start_memory = process.memory_info().rss
-        start_time = time.perf_counter()  
-        result = func(*args, **kwargs)
-        end_time = time.perf_counter()  
-        end_memory = process.memory_info().rss 
-
-        performance_data = {
-            "function": func.__name__,
-            "time_taken": end_time - start_time,  
-            "memory_usage": (end_memory - start_memory) / 10**6 
-        }
-        return result, performance_data
-    return wrapper
-
-
 
 
 
@@ -54,6 +36,8 @@ def performance(func):
 
 # generate , read file
 def file_reader():
+    global count_numbers
+
 
     while True:
 
@@ -75,6 +59,7 @@ def file_reader():
                 else:
                     file_path = random_to_file(counter = num)
                     console.print(f"\nyour random file numer generated in --> {file_path!r}\n", style="bold green")
+                    count_numbers = int(counter_input)
                     break
 
         except :
@@ -90,12 +75,50 @@ def file_reader():
 
     return numbers
 
-    
-
-numbers = file_reader()
 
 
-sort_iput = Prompt.ask("Enter your your algorithem or 'all' for teat all algorithem sort", choices=["all", "merge", "quick", "partition_quick", "python", "buble"], default="all")
+# time, memory decorator
+def performance(func):
+    def wrapper(*args, **kwargs):
+        process = psutil.Process(os.getpid())
+        start_memory = process.memory_info().rss
+        start_time = time.perf_counter()  
+        result = func(*args, **kwargs)
+        end_time = time.perf_counter()  
+        end_memory = process.memory_info().rss 
+
+        performance_data = {
+            "function": func.__name__.replace("_decorated", ""),
+            "time_taken": end_time - start_time,  
+            "memory_usage": (end_memory - start_memory) / 10**6 ,
+            "number_count": int(count_numbers)
+        }
+        return result, performance_data
+    return wrapper
+
+
+
+
+def write_file(file_name, sorted_nums):
+
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(current_dir, file_name)
+    console.print(f"\nyour random file numer generated in --> {file_path!r}\n", style="bold green")
+
+    try :
+        with open(file_path, "w") as file:
+            for num in sorted_nums:
+                file.write(str(num) + "\n")
+            console.print(f"\nyour sorted numbers in {file_path}\n", style="bold green")
+
+    except :
+        console.print("\nError while reading file.\n", style="bold red")
+
+
+
+# numbers = file_reader()
+
+
 
 
 @performance
@@ -125,46 +148,53 @@ def python_sort_decorated(numbers):
 
 
 
-if sort_iput == "all":
-    print("***"*80)
-    print(merge_sort(numbers))
-    print("***"*80)
-    print(q_sort(numbers))
-    print("***"*80)
-    # print(buble_sort(numbers))
-    # print("***"*80)
-
-
-elif sort_iput == "merge":
-    result, performance_data = merge_sort_decorated(numbers)
-    # print(result)
-    print(performance_data)
-    # merge_sort(numbers)
-    performance(performance_data)
-
-elif sort_iput == "quick":
-    result, performance_data = q_sort_decorated(numbers)
-    print(result)
-    print(performance_data)
-
-elif sort_iput == "partition_quick":
-    result, performance_data = main_q_sort_decorated(numbers)
-    # print(result)
-    print(performance_data)
-
-elif sort_iput == "python":
-    result, performance_data = python_sort_decorated(numbers)
-    print(result)
-    print(performance_data)
-
-elif sort_iput == "buble":
-    result, performance_data = buble_sort_decorated(numbers)
-    print(result)
-    print(performance_data)
-
-
-
     
 # main func usage
 if __name__ == "__main__":
+    list_data = []
     numbers = file_reader()
+
+    sort_iput = Prompt.ask("Enter your your algorithem or 'all' for teat all algorithem sort", choices=["all", "merge", "quick", "partition_quick", "python", "buble"], default="all")
+
+
+    if sort_iput == "all":
+        print("***"*80)
+        print(merge_sort(numbers))
+        print("***"*80)
+        print(q_sort(numbers))
+        print("***"*80)
+        # print(buble_sort(numbers))
+        # print("***"*80)
+
+
+    elif sort_iput == "merge":
+        result, performance_data = merge_sort_decorated(numbers)
+        list_data.append(performance_data)
+        print(list_data)
+        write_file(file_name="merge_sorted.txt", sorted_nums=result)
+        file_path = save_performance_data_to_word(list_data, flag="merge")
+        console.print(f"\nyour Reporting functions in {file_path}\n", style="bold blue")
+
+    elif sort_iput == "quick":
+        result, performance_data = q_sort_decorated(numbers)
+        list_data.append(performance_data)
+        print(list_data)
+        write_file(file_name="quick_sorted.txt", sorted_nums=result)
+        file_path = save_performance_data_to_word(list_data, flag="quick")
+        console.print(f"\nyour Reporting functions in {file_path}\n", style="bold blue")
+        
+
+    elif sort_iput == "partition_quick":
+        result, performance_data = main_q_sort_decorated(numbers)
+
+        print(performance_data)
+
+    elif sort_iput == "python":
+        result, performance_data = python_sort_decorated(numbers)
+        print(result)
+        print(performance_data)
+
+    elif sort_iput == "buble":
+        result, performance_data = buble_sort_decorated(numbers)
+        print(result)
+        print(performance_data)
