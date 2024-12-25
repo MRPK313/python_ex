@@ -15,10 +15,10 @@ def q_sort(arr):
 
     return q_sort(left) + [p_arr[p]] + q_sort(right)
 
+if __name__ == '__main__':
+    arr = [5, 2, 8, 1, 7, 3, 6, 4]
 
-arr = [5, 2, 8, 1, 7, 3, 6, 4]
-
-print(q_sort(arr))  # Output: [1, 2, 3, 4, 5, 6, 7, 8]
+    print(q_sort(arr))  # Output: [1, 2, 3, 4, 5, 6, 7, 8]
 
 # best and average order : o(nlogn)
 # worst order : o(n^2)

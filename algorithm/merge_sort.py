@@ -45,8 +45,8 @@ def merge_sort(arr):
 
 
 
-
-print(merge_sort([3,1,5,7,4,2,10]))
+if __name__ == "__main__":
+    print(merge_sort([3,1,5,7,4,2,10]))
 
 
 # all orders : o(n log n)

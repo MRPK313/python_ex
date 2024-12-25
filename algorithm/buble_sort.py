@@ -21,8 +21,8 @@ def buble_sort(arr):
     return arr
 
 
-
-print(buble_sort([64, 34, 25, 12, 22, 11, 90]))
+if __name__ == '__main':
+    print(buble_sort([64, 34, 25, 12, 22, 11, 90]))
 
 
 # best order : o(n)

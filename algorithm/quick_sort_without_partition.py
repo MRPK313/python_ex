@@ -27,8 +27,8 @@ def q_sort(arr):
     return q_sort(left) +[arr[pivot]]+ q_sort(right)
 
 
-
-print(q_sort([3,1,5,7,4,2,10]))
+if __name__ == '__main__':
+    print(q_sort([3,1,5,7,4,2,10]))
 
 
 # best and average order : o(nlogn)
