@@ -1,6 +1,28 @@
+import subprocess
+import sys
+
+# Install Python libraries
+packages_import = ["psutil", "matplotlib", "rich", "docx", "psutil"]
+install_name_packages = ["psutil", "matplotlib", "rich", "python-docx", "psutil"]
+
+def install(package):
+    subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+
+for package in packages_import:
+    try:
+        __import__(package)
+    except ImportError:
+        print(f"{package} is not installed. Installing...\n\n")
+        install(install_name_packages)
+
+
+
+
+
 import time
 import os
 import psutil
+import matplotlib.pyplot as plt  # برای رسم نمودار اضافه شد
 from save_performance_data_to_word import save_performance_data_to_word
 from rich.prompt import Prompt
 from rich.console import Console
@@ -10,44 +32,21 @@ from quick_sort import q_sort as main_q_sort
 from buble_sort import buble_sort
 from quick_sort_without_partition import q_sort
 
-
-
-
 console = Console()
-
-
-
-# def performance(func):
-#     def wrapper(*args, **kwargs):
-#         start_time = time.time()
-#         result = func(*args, **kwargs)
-#         end_time = time.time()
-#         performance_data = {
-#             "function": func.__name__,
-#             "time_taken": end_time - start_time,
-#         }
-#         return result, performance_data
-#     return wrapper
-
-
-
-
-
 
 # generate , read file
 def file_reader():
     global count_numbers
 
-
     while True:
 
         try:
-            is_file = input("Enter '1' load the file or any thing to generate file number  [1/any] : ")
+            is_file = input("Enter '1' load the file or any thing to generate file number [1/any] : ")
 
             if is_file == "1":
                 file_path = input("Enter your file path : ")
+                count_numbers = sum(1 for _ in open(file_path))  # Count lines in the file
                 break
-
 
             else:
                 counter_input = input("How many numbers do you want to generate : ")
@@ -57,7 +56,7 @@ def file_reader():
                     console.print("\nPlease enter a positive number.\n", style="bold red")
                 
                 else:
-                    file_path = random_to_file(counter = num)
+                    file_path = random_to_file(counter=num)
                     console.print(f"\nyour random file numer generated in --> {file_path!r}\n", style="bold green")
                     count_numbers = int(counter_input)
                     break
@@ -75,8 +74,6 @@ def file_reader():
 
     return numbers
 
-
-
 # time, memory decorator
 def performance(func):
     def wrapper(*args, **kwargs):
@@ -87,41 +84,29 @@ def performance(func):
         end_time = time.perf_counter()  
         end_memory = process.memory_info().rss 
 
-        memmory = end_time - start_time
+        time_take = end_time - start_time
+        memmory = (end_memory - start_memory) / 10**6
         performance_data = {
             "function": func.__name__.replace("_decorated", "").replace("main_q_sort","partition_quck_sort").replace("q_sort","quick_sort"),
-            "time_taken":  memmory if memmory >= 0 else 0.0000001,  
-            "memory_usage": (end_memory - start_memory) / 10**6 ,
+            "time_taken":  time_take if time_take >= 0 else 0.0000001,  
+            "memory_usage":  memmory if memmory >= 0 else 0.0000001,
             "number_count": int(count_numbers)
         }
         return result, performance_data
     return wrapper
 
-
-
-
 def write_file(file_name, sorted_nums):
-
     current_dir = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(current_dir, file_name)
-    console.print(f"\nyour random file numer generated in --> {file_path!r}\n", style="bold green")
 
     try :
         with open(file_path, "w") as file:
             for num in sorted_nums:
                 file.write(str(num) + "\n")
-            console.print(f"\nyour sorted numbers in {file_path}\n", style="bold green")
+            console.print(f"\nyour sorted numbers in {file_path}\n", style="bold yellow")
 
     except :
         console.print("\nError while reading file.\n", style="bold red")
-
-
-
-
-# numbers = file_reader()
-
-
-
 
 @performance
 def merge_sort_decorated(numbers):
@@ -143,68 +128,38 @@ def buble_sort_decorated(numbers):
 def python_sort_decorated(numbers):
     return sorted(numbers)
 
-
-
-
-
-    
 # main func usage
 if __name__ == "__main__":
     list_data = []
     numbers = file_reader()
 
-    sort_iput = Prompt.ask("Enter your your algorithem or 'all' for teat all algorithem sort", choices=["all", "merge", "quick", "partition_quick", "python", "buble"], default="all")
+    sort_input = Prompt.ask("Enter your your algorithem or 'all' for teat all algorithem sort", choices=["all", "merge", "quick", "partition_quick", "python", "buble"], default="all")
 
     def main_merge():
-
-        result, performance_data = merge_sort_decorated(numbers)
+        result, performance_data = merge_sort_decorated(numbers[:])
         list_data.append(performance_data)
-        print(list_data)
         write_file(file_name="merge_sorted.txt", sorted_nums=result)
-        file_path = save_performance_data_to_word(list_data, flag="merge")
-        console.print(f"\nyour Reporting functions in {file_path}\n", style="bold blue")
-
 
     def main_quick():
-
-        result, performance_data = q_sort_decorated(numbers)
+        result, performance_data = q_sort_decorated(numbers[:])
         list_data.append(performance_data)
-        print(list_data)
         write_file(file_name="quick_sorted.txt", sorted_nums=result)
-        file_path = save_performance_data_to_word(list_data, flag="quick")
-        console.print(f"\nyour Reporting functions in {file_path}\n", style="bold blue")
-
 
     def main_partition_quick():
-
-        result, performance_data = main_q_sort_decorated(numbers)
+        result, performance_data = main_q_sort_decorated(numbers[:])
         list_data.append(performance_data)
-        print(list_data)
         write_file(file_name="partition_quick_sorted.txt", sorted_nums=result)
-        file_path = save_performance_data_to_word(list_data, flag="partition_quick")
-        console.print(f"\nyour Reporting functions in {file_path}\n", style="bold blue")
-
 
     def main_python():
-
-        result, performance_data = python_sort_decorated(numbers)
+        result, performance_data = python_sort_decorated(numbers[:])
         list_data.append(performance_data)
-        print(list_data)
         write_file(file_name="python_sorted.txt", sorted_nums=result)
-        file_path = save_performance_data_to_word(list_data, flag="python")
-        console.print(f"\nyour Reporting functions in {file_path}\n", style="bold blue")
 
-    def main_buble(numbers = numbers):
-
-        if  len(numbers) <= 10000:
-
-            result, performance_data = buble_sort_decorated(numbers)
+    def main_bubble():
+        if len(numbers) <= 10000:
+            result, performance_data = buble_sort_decorated(numbers[:])
             list_data.append(performance_data)
-            print(list_data)
             write_file(file_name="buble_sorted.txt", sorted_nums=result)
-            file_path = save_performance_data_to_word(list_data, flag="buble")
-            console.print(f"\nyour Reporting functions in {file_path}\n", style="bold blue")
-
         else:
             performance_data = {
                 "function": "bubble_sort",
@@ -213,89 +168,54 @@ if __name__ == "__main__":
                 "number_count": len(numbers)  
             }
             list_data.append(performance_data)
-            print(list_data)
-            file_path = save_performance_data_to_word(list_data, flag="buble")
-            console.print(f"\nyour Reporting functions in {file_path}\n", style="bold blue")
 
+    if sort_input == "all":
+        main_merge()
+        main_quick()
+        main_partition_quick()
+        main_python()
+        main_bubble()
 
-
-    if sort_iput == "all":
-
-        result, performance_data = merge_sort_decorated(numbers)
-        list_data.append(performance_data)
-        print(list_data)
-        write_file(file_name="merge_sorted.txt", sorted_nums=result)
-
-
-
-        result, performance_data = q_sort_decorated(numbers)
-        list_data.append(performance_data)
-        print(list_data)
-        write_file(file_name="quick_sorted.txt", sorted_nums=result)
-
-
-        result, performance_data = main_q_sort_decorated(numbers)
-        list_data.append(performance_data)
-        print(list_data)
-        write_file(file_name="partition_quick_sorted.txt", sorted_nums=result)
-        
-
-        result, performance_data = python_sort_decorated(numbers)
-        list_data.append(performance_data)
-        print(list_data)
-        write_file(file_name="python_sorted.txt", sorted_nums=result)
-
-
-
-
-        if  len(numbers) <= 10000:
-
-            result, performance_data = buble_sort_decorated(numbers)
-            list_data.append(performance_data)
-            print(list_data)
-            write_file(file_name="buble_sorted.txt", sorted_nums=result)
-            file_path = save_performance_data_to_word(list_data, flag="buble")
-            console.print(f"\nyour Reporting functions in {file_path}\n", style="bold blue")
-
-        else:
-            performance_data = {
-                "function": "bubble_sort",
-                "time_taken": "Timeout",
-                "memory_usage": "N/A",
-                "number_count": len(numbers)  
-            }
-            list_data.append(performance_data)
-            print(list_data)
-            file_path = save_performance_data_to_word(list_data, flag="buble")
-            console.print(f"\nyour Reporting functions in {file_path}\n", style="bold blue")
-
-
-
+        # Save all results in one Word file
         file_path = save_performance_data_to_word(list_data, flag="all")
         console.print(f"\nyour Reporting functions in {file_path}\n", style="bold blue")
 
+        # رسم نمودار بر اساس performance_data
+        algorithms = [item["function"] for item in list_data]
+        time_taken = [item["time_taken"] if isinstance(item["time_taken"], (int, float)) else 0 for item in list_data]
+        memory_usage = [item["memory_usage"] if isinstance(item["memory_usage"], (int, float)) else 0 for item in list_data]
 
+        x = range(len(algorithms))
 
+        plt.figure(figsize=(10, 6))
 
-    elif sort_iput == "merge":
+        # رسم نمودار زمان
+        plt.bar(x, time_taken, width=0.4, label="Time Taken (s)", color="skyblue", align='center')
         
+        # رسم نمودار استفاده از حافظه
+        plt.bar(x, memory_usage, width=0.4, label="Memory Usage (MB)", color="orange", align='edge')
+
+        plt.xticks(x, algorithms, rotation=45)
+        plt.ylabel("Performance Metrics")
+        plt.title("Sorting Algorithm Performance")
+        plt.legend()
+        plt.tight_layout()
+        
+        # نمایش نمودار
+        plt.show()
+
+    elif sort_input == "merge":
         main_merge()
-
-    elif sort_iput == "quick":
-
+    elif sort_input == "quick":
         main_quick()
-
-    elif sort_iput == "partition_quick":
-
+    elif sort_input == "partition_quick":
         main_partition_quick()
-
-    elif sort_iput == "python":
-
+    elif sort_input == "python":
         main_python()
-        
+    elif sort_input == "buble":
+        main_bubble()
 
-    elif sort_iput == "buble":
-
-        main_buble()
-
-   
+    # Save individual result if not "all"
+    if sort_input != "all":
+        file_path = save_performance_data_to_word(list_data, flag=sort_input)
+        console.print(f"\nyour Reporting functions in {file_path}\n", style="bold blue")
