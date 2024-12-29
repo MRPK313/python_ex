@@ -1,6 +1,28 @@
+import subprocess
+import sys
+
+# Install Python libraries
+packages_import = ["psutil", "matplotlib", "rich", "docx", "psutil"]
+install_name_packages = ["psutil", "matplotlib", "rich", "python-docx", "psutil"]
+
+def install(package):
+    subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+
+for package in packages_import:
+    try:
+        __import__(package)
+    except ImportError:
+        print(f"{package} is not installed. Installing...\n\n")
+        install(install_name_packages)
+
+
+
+
+
 import time
 import os
 import psutil
+import matplotlib.pyplot as plt  # برای رسم نمودار اضافه شد
 from save_performance_data_to_word import save_performance_data_to_word
 from rich.prompt import Prompt
 from rich.console import Console
@@ -62,11 +84,12 @@ def performance(func):
         end_time = time.perf_counter()  
         end_memory = process.memory_info().rss 
 
-        memmory = end_time - start_time
+        time_take = end_time - start_time
+        memmory = (end_memory - start_memory) / 10**6
         performance_data = {
             "function": func.__name__.replace("_decorated", "").replace("main_q_sort","partition_quck_sort").replace("q_sort","quick_sort"),
-            "time_taken":  memmory if memmory >= 0 else 0.0000001,  
-            "memory_usage": (end_memory - start_memory) / 10**6 ,
+            "time_taken":  time_take if time_take >= 0 else 0.0000001,  
+            "memory_usage":  memmory if memmory >= 0 else 0.0000001,
             "number_count": int(count_numbers)
         }
         return result, performance_data
@@ -75,7 +98,6 @@ def performance(func):
 def write_file(file_name, sorted_nums):
     current_dir = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(current_dir, file_name)
-    # console.print(f"\nyour random file numer generated in --> {file_path!r}\n", style="bold green")
 
     try :
         with open(file_path, "w") as file:
@@ -157,6 +179,30 @@ if __name__ == "__main__":
         # Save all results in one Word file
         file_path = save_performance_data_to_word(list_data, flag="all")
         console.print(f"\nyour Reporting functions in {file_path}\n", style="bold blue")
+
+        # رسم نمودار بر اساس performance_data
+        algorithms = [item["function"] for item in list_data]
+        time_taken = [item["time_taken"] if isinstance(item["time_taken"], (int, float)) else 0 for item in list_data]
+        memory_usage = [item["memory_usage"] if isinstance(item["memory_usage"], (int, float)) else 0 for item in list_data]
+
+        x = range(len(algorithms))
+
+        plt.figure(figsize=(10, 6))
+
+        # رسم نمودار زمان
+        plt.bar(x, time_taken, width=0.4, label="Time Taken (s)", color="skyblue", align='center')
+        
+        # رسم نمودار استفاده از حافظه
+        plt.bar(x, memory_usage, width=0.4, label="Memory Usage (MB)", color="orange", align='edge')
+
+        plt.xticks(x, algorithms, rotation=45)
+        plt.ylabel("Performance Metrics")
+        plt.title("Sorting Algorithm Performance")
+        plt.legend()
+        plt.tight_layout()
+        
+        # نمایش نمودار
+        plt.show()
 
     elif sort_input == "merge":
         main_merge()
