@@ -1,4 +1,4 @@
-
+import unittest
 
 class Shape:
 
@@ -66,6 +66,9 @@ class Square(Shape):
 
     def calculate_perimeter(self) -> None:
         self.perimeter = 4 * self.length
+
+    def __call__(self, **kwargs) -> None:
+        super().__init__(**kwargs)
 
     
 
@@ -167,6 +170,13 @@ print(s.show())
 print(40 * "_")
 
 
+s(length = 8)
+s.calculate_area()
+s.calculate_perimeter()
+print(s.show())
+print(40 * "_")
+
+
 t = Triangle(base = 4, side1 = 3, side2 = 5, height = 3)
 t.calculate_area()
 t.calculate_perimeter()
@@ -200,3 +210,60 @@ c.calculate_area()
 c.calculate_perimeter()
 print(c.show())
 print(40 * "_")
+
+
+
+
+class TestShapes(unittest.TestCase):
+
+    def test_rectangle(self):
+        r = Rectangle(length=2, width=6)
+        r.calculate_area()
+        r.calculate_perimeter()
+        self.assertEqual(r.area, 12)
+        self.assertEqual(r.perimeter, 16)
+
+    def test_square(self):
+        s = Square(length=4)
+        s.calculate_area()
+        s.calculate_perimeter()
+        self.assertEqual(s.area, 16)
+        self.assertEqual(s.perimeter, 16)
+
+    def test_triangle(self):
+        t = Triangle(base=4, side1=3, side2=5, height=3)
+        t.calculate_area()
+        t.calculate_perimeter()
+        self.assertEqual(t.area, 6)
+        self.assertEqual(t.perimeter, 12)
+
+    def test_rhombus(self):
+        m = Rhombus(length=6, diameter1=6, diameter2=10)
+        m.calculate_area()
+        m.calculate_perimeter()
+        self.assertEqual(m.area, 30)
+        self.assertEqual(m.perimeter, 24)
+
+    def test_parallelogram(self):
+        p = Parallelogram(base=6, height=2, width=4)
+        p.calculate_area()
+        p.calculate_perimeter()
+        self.assertEqual(p.area, 12)
+        self.assertEqual(p.perimeter, 20)
+
+    def test_trapezium(self):
+        f = Trapezium(base=8, height=4, lheight=5, side1=4, side2=5)
+        f.calculate_area()
+        f.calculate_perimeter()
+        self.assertEqual(f.area, 26)
+        self.assertEqual(f.perimeter, 22)
+
+    def test_circle(self):
+        c = Cicle(redius=4)
+        c.calculate_area()
+        c.calculate_perimeter()
+        self.assertAlmostEqual(c.area, 50.24, places=2)
+        self.assertAlmostEqual(c.perimeter, 25.12, places=2)
+
+if __name__ == "__main__":
+    unittest.main()

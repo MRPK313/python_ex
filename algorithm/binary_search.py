@@ -19,9 +19,11 @@ def binary_search(arr,target):
 
 
 
-print(binary_search([1,4,6,8,9,19,84],9))
 
-print(binary_search([1,4,6,8,9,19,84],484))
+if __name__ == "__main__":
+    print(binary_search([1,4,6,8,9,19,84],9))
+
+    print(binary_search([1,4,6,8,9,19,84],484))
 
 
 # best order : o(1)
