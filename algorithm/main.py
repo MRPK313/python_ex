@@ -1,19 +1,20 @@
 import subprocess
 import sys
 
-# Install Python libraries
-packages_import = ["psutil", "matplotlib", "rich", "docx", "psutil"]
-install_name_packages = ["psutil", "matplotlib", "rich", "python-docx", "psutil"]
+# Install Python libraries ---> name import : library name (to install)
+packages_import = {"psutil":"psutil", "matplotlib":"matplotlib", "rich":"rich", "docx":"python-docx"}
 
 def install(package):
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "--upgrade", "pip"])
     subprocess.check_call([sys.executable, "-m", "pip", "install", package])
 
-for package in packages_import:
+
+for package in packages_import.keys():
     try:
         __import__(package)
     except ImportError:
         print(f"{package} is not installed. Installing...\n\n")
-        install(install_name_packages)
+        install(packages_import[package])
 
 
 
